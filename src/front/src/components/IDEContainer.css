@@ -1,0 +1,98 @@
+.ide-container {
+  display: grid;
+  grid-template-columns: 250px 1fr 300px;
+  grid-template-rows: 1fr auto;
+  grid-template-areas: 
+    "left main right"
+    "terminal terminal terminal";
+  width: 100%;
+  height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+/* 左侧面板 - 文件资源管理器 */
+.left-panel {
+  grid-area: left;
+  background-color: var(--bg-secondary);
+  border-right: 1px solid var(--border-color);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 主面板 - 文件编辑区域 */
+.main-panel-wrapper {
+  grid-area: main;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.main-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 右侧面板 - AI助手 */
+.right-panel {
+  grid-area: right;
+  background-color: var(--bg-secondary);
+  border-left: 1px solid var(--border-color);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 终端区域 */
+.terminal {
+  grid-area: terminal;
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  transition: height 0.3s ease;
+  overflow: hidden;
+}
+
+/* 终端折叠状态 */
+.terminal.collapsed {
+  height: 30px;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+  .ide-container {
+    grid-template-columns: 200px 1fr 250px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .ide-container {
+    grid-template-columns: 180px 1fr;
+    grid-template-areas: 
+      "left main"
+      "terminal terminal";
+  }
+  
+  .right-panel {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .ide-container {
+    grid-template-columns: 1fr;
+    grid-template-areas: 
+      "main"
+      "terminal";
+  }
+  
+  .left-panel {
+    display: none;
+  }
+}

@@ -1,0 +1,140 @@
+/* Terminal.css - 终端组件样式 */
+
+.terminal {
+  grid-area: terminal;
+  background-color: #1e1e1e;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  transition: height 0.3s ease;
+  overflow: hidden;
+  min-height: 30px;
+  height: 200px;
+}
+
+.terminal.collapsed {
+  height: 30px;
+}
+
+.terminal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 16px;
+  background-color: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 12px;
+  color: var(--text-primary);
+  cursor: pointer;
+  min-height: 30px;
+}
+
+.terminal-header:hover {
+  background-color: var(--bg-hover);
+}
+
+.terminal-title {
+  font-weight: 500;
+}
+
+.terminal-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.terminal-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-width: 50px;
+  justify-content: center;
+  height: 24px;
+}
+
+.terminal-action-btn:hover {
+  background-color: var(--bg-hover);
+  border-color: var(--accent-color);
+  transform: translateY(-1px);
+}
+
+.terminal-action-btn:active {
+  transform: translateY(0);
+}
+
+.btn-icon {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+}
+
+.btn-text {
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* 按钮类型特定样式 */
+.clear-btn {
+  background-color: var(--bg-tertiary);
+}
+
+.toggle-btn {
+  background-color: var(--bg-tertiary);
+  min-width: 60px;
+}
+
+.terminal-content {
+  flex: 1;
+  overflow: auto;
+  padding: 12px 16px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.terminal-output {
+  margin-bottom: 12px;
+}
+
+.terminal-line {
+  margin-bottom: 2px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.terminal-input-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.terminal-prompt {
+  color: var(--success-color);
+  font-weight: 500;
+}
+
+.terminal-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0;
+}
+
+.terminal-input::placeholder {
+  color: var(--text-muted);
+}

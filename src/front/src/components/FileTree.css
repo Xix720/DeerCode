@@ -1,0 +1,134 @@
+/* 文件树样式 */
+.file-tree {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.file-tree ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+/* 文件节点样式 */
+.file-node {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.file-node .file-tree {
+  margin-left: 12px;
+}
+
+/* 展开/折叠按钮样式 */
+.toggle-btn {
+  background: none;
+  border: none;
+  padding: 2px 4px;
+  margin: 0;
+  cursor: pointer;
+  font-size: 10px;
+  line-height: 1;
+  color: var(--text-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+  outline: none; /* 移除焦点轮廓 */
+}
+
+.toggle-btn:focus {
+  outline: none; /* 确保点击时没有焦点轮廓 */
+  box-shadow: none; /* 移除任何可能的阴影 */
+}
+
+.toggle-btn.expanded {
+  transform: rotate(90deg);
+}
+
+/* 文件图标间隔 */
+.file-icon-spacer {
+  width: 20px;
+  display: inline-block;
+}
+
+/* 文件图标样式 */
+.file-icon {
+  margin-right: 6px;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: var(--text-color);
+}
+
+/* 文件节点样式 */
+.file-item {
+  display: flex;
+  align-items: center;
+  padding: 2px 4px;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 3px;
+  transition: background-color 0.1s ease;
+}
+
+.file-item:hover {
+  background-color: var(--hover-color);
+}
+
+/* 文件名称样式 */
+.file-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 2px 0;
+}
+
+/* 目录加载状态指示器 */
+.dir-loading-indicator {
+  display: flex;
+  gap: 2px;
+  margin-left: 8px;
+  align-items: center;
+}
+
+.loading-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--accent-color);
+  animation: loadingPulse 1.4s infinite ease-in-out;
+}
+
+.loading-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loading-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes loadingPulse {
+  0%, 80%, 100% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 目录展开/折叠动画 */
+.file-tree {
+  max-height: 1000px;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+/* 移除有问题的样式规则，目录展开/折叠通过React状态控制 */
