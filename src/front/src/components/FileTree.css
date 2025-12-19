@@ -89,6 +89,36 @@
   padding: 2px 0;
 }
 
+/* 文件名称编辑样式 */
+.file-name-edit {
+  background-color: transparent;
+  border: 1px solid var(--accent-color);
+  border-radius: 3px;
+  padding: 2px 4px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--text-primary);
+  width: 150px;
+  outline: none;
+  box-shadow: 0 0 0 1px var(--accent-color);
+}
+
+/* 选中的文件项样式 */
+.file-item.selected {
+  background-color: var(--bg-hover);
+  border-left: 2px solid var(--accent-color);
+}
+
+/* 编辑状态的文件项样式 */
+.file-item {
+  position: relative;
+}
+
+/* 确保输入框在选中状态下也能正常显示 */
+.file-item.selected .file-name-edit {
+  background-color: var(--bg-hover);
+}
+
 /* 目录加载状态指示器 */
 .dir-loading-indicator {
   display: flex;
@@ -129,6 +159,44 @@
   max-height: 1000px;
   overflow: hidden;
   transition: max-height 0.3s ease;
+}
+
+/* 删除按钮样式 */
+.delete-btn {
+  background: none;
+  border: none;
+  padding: 2px 4px;
+  margin: 0 0 0 8px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--text-color);
+  opacity: 0;
+  transition: opacity 0.2s ease, color 0.2s ease;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+}
+
+.delete-btn:hover {
+  color: var(--error-color, #ff4444);
+  background-color: rgba(255, 68, 68, 0.1);
+  opacity: 1;
+}
+
+.file-item:hover .delete-btn {
+  opacity: 0.6;
+}
+
+.file-item:hover .delete-btn:hover {
+  opacity: 1;
+}
+
+.delete-btn:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 /* 移除有问题的样式规则，目录展开/折叠通过React状态控制 */

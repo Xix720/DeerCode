@@ -120,6 +120,63 @@ def handle_connect():
 def handle_disconnect():
     print('客户端已断开连接')
 
+@socketio.on('execute_command')
+def handle_execute_command(data):
+    """
+    执行命令并实时推送输出
+    """
+    command = data.get('command', '')
+    print(f"执行命令: {command}")
+    
+    if not command:
+        emit('command_output', {'output': '请输入有效的命令', 'is_error': True})
+        emit('command_done')
+        return
+    
+    import subprocess
+    import shlex
+    
+    try:
+        # 解析命令
+        if command.startswith('cd '):
+            # 处理cd命令
+            new_dir = command[3:].strip()
+            if new_dir:
+                import os
+                os.chdir(new_dir)
+                emit('command_output', {'output': f'切换到目录: {new_dir}'})
+            else:
+                emit('command_output', {'output': f'当前目录: {os.getcwd()}'})
+            emit('command_done')
+            return
+        
+        # 执行命令
+        process = subprocess.Popen(
+            shlex.split(command),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            bufsize=1,
+            universal_newlines=True
+        )
+        
+        # 实时读取输出
+        if process.stdout:
+            for line in iter(process.stdout.readline, ''):
+                emit('command_output', {'output': line.rstrip()})
+            process.stdout.close()
+        
+        # 等待命令执行完成
+        process.wait()
+        
+        # 发送命令执行完成事件
+        emit('command_done')
+        
+    except Exception as e:
+        emit('command_output', {'output': f'命令执行错误: {str(e)}', 'is_error': True})
+        emit('command_done')
+        return
+
 @app.route('/api/files', methods=['GET'])
 def get_files():
     """
@@ -249,7 +306,8 @@ def create_file():
     if not name:
         return jsonify({'error': '文件名不能为空'}), 400
     
-    full_path = os.path.join(CODESPACE_DIR, path, name)
+    # 修复路径拼接问题，确保path不会导致CODESPACE_DIR被忽略
+    full_path = os.path.join(CODESPACE_DIR, path.lstrip('/'), name)
     
     try:
         if is_dir:
@@ -260,6 +318,35 @@ def create_file():
             os.makedirs(os.path.dirname(full_path), exist_ok=True)
             with open(full_path, 'w', encoding='utf-8') as f:
                 f.write(content)
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/files/<path:file_path>', methods=['PATCH'])
+def rename_file(file_path):
+    """
+    重命名文件或目录
+    """
+    data = request.json
+    new_name = data.get('new_name', '')
+    
+    if not new_name:
+        return jsonify({'error': '新文件名不能为空'}), 400
+    
+    # 构建原始路径
+    old_full_path = os.path.join(CODESPACE_DIR, file_path)
+    
+    # 检查原始路径是否存在
+    if not os.path.exists(old_full_path):
+        return jsonify({'error': '文件或目录不存在'}), 404
+    
+    # 构建新路径（在同一目录下）
+    dir_path = os.path.dirname(old_full_path)
+    new_full_path = os.path.join(dir_path, new_name)
+    
+    try:
+        # 使用os.rename重命名文件或目录
+        os.rename(old_full_path, new_full_path)
         return jsonify({'success': True})
     except Exception as e:
         return jsonify({'error': str(e)}), 500

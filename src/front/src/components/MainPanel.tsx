@@ -106,9 +106,38 @@ const MainPanel: React.FC<MainPanelProps> = ({ activeFilePath, activeFileName })
     ));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     console.log('保存文件');
-    // 这里可以添加保存逻辑
+    // 找到当前激活的标签页
+    const activeTabInfo = openTabs.find(tab => tab.id === activeTab);
+    if (!activeTabInfo) {
+      console.error('没有找到激活的标签页');
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/files/${encodeURIComponent(activeTabInfo.path)}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: codeContent
+        })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log('文件保存成功');
+        // 可以添加保存成功的提示
+      } else {
+        console.error('文件保存失败:', data.error);
+        // 可以添加保存失败的提示
+      }
+    } catch (err) {
+      console.error('保存文件时发生错误:', err);
+      // 可以添加保存错误的提示
+    }
   };
 
   const handleFormat = () => {

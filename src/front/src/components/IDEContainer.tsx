@@ -29,15 +29,14 @@ const IDEContainer: React.FC = () => {
           activeFilePath={activeFilePath} 
           activeFileName={activeFileName} 
         />
+        {/* 底部终端，只在中间面板内显示 */}
+        <Terminal />
       </div>
       
       {/* 右侧面板 - AI助手 */}
       <div className="right-panel">
         <RightPanel />
       </div>
-      
-      {/* 底部终端 */}
-      <Terminal />
     </div>
   );
 };

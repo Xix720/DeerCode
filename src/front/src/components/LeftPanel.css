@@ -68,6 +68,41 @@
   padding: 8px 0;
 }
 
+/* 文件资源管理器操作按钮 */
+.file-explorer-actions {
+  display: flex;
+  gap: 4px;
+  padding: 0 16px 8px;
+  opacity: 1;
+}
+
+/* 操作按钮样式 */
+.explorer-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.15s ease;
+  padding: 0;
+}
+
+.explorer-action-btn:hover {
+  background-color: var(--bg-hover);
+  border-color: var(--accent-color);
+  transform: translateY(-1px);
+}
+
+.explorer-action-btn:active {
+  transform: translateY(0);
+}
+
 /* 加载状态样式 */
 .loading-state {
   display: flex;

@@ -25,9 +25,14 @@ interface FileTreeProps {
   expandedDirs: string[];
   onToggleDir: (dirPath: string) => void;
   onFileClick: (filePath: string, fileName: string) => void;
+  selectedFilePath: string;
+  onRename?: (path: string, newName: string) => void;
 }
 
-const FileTree: React.FC<FileTreeProps> = ({ fileTree, expandedDirs, onToggleDir, onFileClick }) => {
+const FileTree: React.FC<FileTreeProps> = ({ fileTree, expandedDirs, onToggleDir, onFileClick, selectedFilePath, onRename }) => {
+  // 编辑状态管理 - 使用Map存储每个节点的编辑名称
+  const [editNames, setEditNames] = React.useState<Map<string, string>>(new Map());
+
   // 根据文件扩展名获取对应的图标
   const getFileIcon = (fileName: string) => {
     const extension = fileName.split('.').pop()?.toLowerCase() || '';
@@ -82,13 +87,21 @@ const FileTree: React.FC<FileTreeProps> = ({ fileTree, expandedDirs, onToggleDir
     const isDir = node.type === 'dir';
     // 只有当目录有子目录时才渲染子目录列表
     const shouldRenderChildren = isDir && isExpanded && node.children && node.children.length > 0;
+    const isSelected = selectedFilePath === node.path;
+    const isEditing = (node as any).isEditing || false;
+    // 从Map中获取编辑名称，没有则使用node.name
+    // 使用has检查Map中是否存在键，确保空字符串也能正确显示
+    const editName = editNames.has(node.path) ? editNames.get(node.path) || '' : node.name;
 
     return (
       <li key={node.path} className="file-node">
         <div 
-          className="file-item"
+          className={`file-item ${isSelected ? 'selected' : ''}`}
           onClick={() => {
-            if (!isDir) {
+            if (isDir) {
+              // 点击目录时更新选中状态并展开/折叠目录
+              onToggleDir(node.path);
+            } else {
               onFileClick(node.path, node.name);
             }
           }}
@@ -113,7 +126,40 @@ const FileTree: React.FC<FileTreeProps> = ({ fileTree, expandedDirs, onToggleDir
             getFileIcon(node.name)
           )}
           
-          <span className="file-name">{node.name}</span>
+          {isEditing ? (
+            <input
+              type="text"
+              className="file-name-edit"
+              value={editName}
+              autoFocus
+              onBlur={(_) => {
+                if (onRename) {
+                  onRename(node.path, editName);
+                }
+              }}
+              onKeyDown={(e) => {
+                if (onRename) {
+                  if (e.key === 'Enter') {
+                    onRename(node.path, editName);
+                  } else if (e.key === 'Escape') {
+                    onRename(node.path, (node as any).isNew ? '' : node.name);
+                  }
+                }
+              }}
+              onChange={(e) => {
+                // 更新编辑状态的名称
+                setEditNames(prev => {
+                  const newMap = new Map(prev);
+                  newMap.set(node.path, e.target.value);
+                  return newMap;
+                });
+              }}
+            />
+          ) : (
+            <span className="file-name">{node.name}</span>
+          )}
+          
+
           
           {/* 目录加载状态指示器 */}
           {isDir && node.isLoading && (
