@@ -7,6 +7,9 @@ import os
 import json
 import threading
 import time
+from deercode.agents.coding_agent import coding_agent
+from langchain.messages import HumanMessage
+import traceback
 
 app = Flask(__name__)
 CORS(app)  # 允许所有跨域请求
@@ -350,6 +353,53 @@ def rename_file(file_path):
         return jsonify({'success': True})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/api/agent', methods=['POST'])
+def agent_request():
+    """
+    处理用户的Agent请求
+    """
+    try:
+        data = request.json
+        user_message = data.get('message', '')
+        project_root = CODESPACE_DIR
+        
+        if not user_message:
+            return jsonify({'error': '消息不能为空'}), 400
+        
+        print(f"接收Agent请求: {user_message}")
+        print(f"项目根目录: {project_root}")
+        
+        # 调用Agent处理请求
+        result = coding_agent.invoke({
+            "messages": [
+                HumanMessage(content=user_message)
+            ],
+            "PROJECT_ROOT": project_root
+        })
+        
+        print(f"Agent响应: {result}")
+        
+        # 提取响应内容
+        response_content = ""
+        if hasattr(result, 'content'):
+            response_content = result.content
+        elif isinstance(result, dict) and 'output' in result:
+            response_content = result['output']
+        else:
+            response_content = str(result)
+        
+        return jsonify({
+            'success': True,
+            'response': response_content
+        })
+    except Exception as e:
+        print(f"Agent请求处理错误: {str(e)}")
+        print(f"错误堆栈: {traceback.format_exc()}")
+        return jsonify({
+            'error': str(e),
+            'stack': traceback.format_exc()
+        }), 500
 
 if __name__ == '__main__':
     # 启动文件监控器
